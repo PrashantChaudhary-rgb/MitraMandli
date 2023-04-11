@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'spotify_test_app.apps.SpotifyTestAppConfig',
+    'users.apps.UsersConfig',
+    'dating.apps.DatingConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
