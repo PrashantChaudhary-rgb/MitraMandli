@@ -1,19 +1,25 @@
 from django import forms
-from django.contrib.auth.models import User
+from  .models import CustomUser
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
 from .models import UserProfile
+from datetime import date
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField()
-
+    date_of_birth = forms.DateField(label='What is your birth date?', widget=forms.SelectDateWidget)
+    def clean_date_of_birth(self):
+        dob = self.cleaned_data['date_of_birth']
+        today = date.today()
+        if (dob.year + 18, dob.month, dob.day) > (today.year, today.month, today.day):
+            raise forms.ValidationError('Must be at least 18 years old to register')
+        return dob
     class Meta:
-        model  = User
-        fields = ['username' , 'email' , 'password1' , 'password2']
+        model  = CustomUser
+        fields = [ 'email' , 'password1' , 'password2', 'date_of_birth']
 
 
 class UserProfileForm(ModelForm):
 
     class Meta:
         model  = UserProfile
-        exclude = ['user']
+        exclude = ['user' , 'matches' , 'pending']
