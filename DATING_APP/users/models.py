@@ -4,6 +4,35 @@ from django.utils import timezone
 from django.contrib.auth.base_user import AbstractBaseUser,BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 
+
+
+#****************************************
+
+class MusicProfile(models.Model):
+    genres = models.TextField(null=False, default='')
+    artists = models.TextField(null=False, default='')
+    popularities = models.TextField(null=False, default='')
+    durations = models.TextField(null=False, default='')
+    release_dates = models.TextField(null=False, default='')
+
+class ReadingProfile(models.Model):
+    pass
+
+class AnimeProfile(models.Model):
+    pass
+
+class MoviesProfile(models.Model):
+    pass
+
+class Interests(models.Model):
+    music = models.OneToOneField(MusicProfile, on_delete=models.CASCADE)
+    reading = models.OneToOneField(ReadingProfile, on_delete=models.CASCADE)
+    Anime = models.OneToOneField(AnimeProfile, on_delete=models.CASCADE)
+    movies = models.OneToOneField(MoviesProfile, on_delete=models.CASCADE)
+
+
+
+#*******************************************
 class UserManager(BaseUserManager):
     use_in_migrations = True
     def _create_user(self, email, password, **extra_fields):
@@ -22,6 +51,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('date_of_birth', '2000-01-01')
         if extra_fields.get('is_staff') is not True:
             raise ValueError(
                 'Superuser must be a staff'
@@ -35,7 +65,6 @@ class UserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    
     email = models.EmailField(unique=True,max_length=255,blank=False)
     is_staff = models.BooleanField('staff status',default=False)
     is_active = models.BooleanField('active',default=False)
@@ -43,7 +72,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField('date joined',default=timezone.now)
     has_profile = models.BooleanField('has profile', default=False, null=False)
     date_of_birth = models.DateField('date of birth', null=False)
-  
 
     USERNAME_FIELD = 'email'
     objects = UserManager()
@@ -66,9 +94,14 @@ class UserProfile(models.Model):
     ]
     gender = models.CharField(max_length=1, choices=GENDER)
     sexual_orientation = models.CharField(max_length=1, choices=GENDER)
-
-
-
+    interests = models.OneToOneField(Interests, on_delete=models.CASCADE)
      
     def __str__(self):
        return f'{self.user} Profile'
+
+
+
+
+
+
+
